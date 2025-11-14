@@ -1,0 +1,1 @@
+{"version":3,"file":"add.js","sources":["D:/下载/HBuilderX.4.57.2025032507/HBuilderX/plugins/uniapp-cli-vite/uniPage:/cGFnZXMvYmlsbC9hZGQudnVl"],"sourcesContent":["import MiniProgramPage from 'C:/Users/86153/Desktop/微信记账小程序/qd/wechat-accounting-frontend/pages/bill/add.vue'\nwx.createPage(MiniProgramPage)"],"names":[],"mappings":";;;;;;;;;;;;AACA,GAAG,WAAW,eAAe;"}

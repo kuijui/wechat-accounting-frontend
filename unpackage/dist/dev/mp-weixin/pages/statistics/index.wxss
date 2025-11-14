@@ -1,0 +1,23 @@
+
+.statistics-container.data-v-6e199430 {
+  padding: 20rpx;
+}
+.header.data-v-6e199430 {
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+.title.data-v-6e199430 {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+.content.data-v-6e199430 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400rpx;
+}
+.placeholder.data-v-6e199430 {
+  color: #999;
+  font-size: 28rpx;
+}
