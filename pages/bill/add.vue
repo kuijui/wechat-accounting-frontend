@@ -16,7 +16,7 @@
         <view 
           class="type-btn" 
           :class="{ active: billType === 'expense' }"
-          @click="billType = 'expense'"
+          @click="changeBillType('expense')"
         >
           <text class="type-icon">💵</text>
           <text class="type-text">支出</text>
@@ -24,7 +24,7 @@
         <view 
           class="type-btn" 
           :class="{ active: billType === 'income' }"
-          @click="billType = 'income'"
+          @click="changeBillType('income')"
         >
           <text class="type-icon">💴</text>
           <text class="type-text">收入</text>
@@ -119,9 +119,8 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
+import { billApi, categoryApi } from '../../api';
+import type { CategoryResponse, BillRequest } from '../../types';
 
 // 数据定义
 const billType = ref<'income' | 'expense'>('expense');
@@ -136,16 +135,38 @@ const form = reactive({
   remark: ''
 });
 
-// 模拟分类数据
-const categories = ref([
-  { id: 1, name: '餐饮' },
-  { id: 2, name: '交通' },
-  { id: 3, name: '购物' },
-  { id: 4, name: '娱乐' },
-  { id: 5, name: '医疗' },
-  { id: 6, name: '住房' },
-  { id: 7, name: '其他' }
-]);
+// 分类列表
+const categories = ref<CategoryResponse[]>([]);
+
+// 加载分类
+const loadCategories = async () => {
+  try {
+    const type = billType.value === 'income' ? 1 : 2;
+    const res = await categoryApi.getList(type);
+    if (res.code === 200 && Array.isArray(res.data)) {
+      categories.value = res.data;
+    } else {
+      categories.value = [];
+    }
+  } catch (error: any) {
+    console.error('获取分类失败:', error);
+    categories.value = [];
+    uni.showToast({
+      title: error?.message || '获取分类失败',
+      icon: 'none'
+    });
+  }
+};
+
+// 切换收支类型
+const changeBillType = (type: 'income' | 'expense') => {
+  if (billType.value === type) return;
+  billType.value = type;
+  // 切换类型时清空当前选中的分类
+  selectedCategory.value = '';
+  selectedCategoryId.value = null;
+  loadCategories();
+};
 
 // 方法
 const handleAmountInput = () => {
@@ -170,6 +191,15 @@ const submitBill = async () => {
     return;
   }
 
+  const amountNum = Number(form.amount);
+  if (isNaN(amountNum) || amountNum <= 0) {
+    uni.showToast({
+      title: '金额必须大于0',
+      icon: 'none'
+    });
+    return;
+  }
+
   if (!selectedCategoryId.value) {
     uni.showToast({
       title: '请选择分类',
@@ -178,23 +208,44 @@ const submitBill = async () => {
     return;
   }
 
-  // 模拟提交
-  uni.showLoading({ title: '保存中...' });
-  
-  setTimeout(() => {
-    uni.hideLoading();
+  const payload: BillRequest = {
+    categoryId: selectedCategoryId.value as number,
+    amount: amountNum,
+    type: billType.value === 'income' ? 1 : 2,
+    billDate: form.date,
+    remark: form.remark || undefined
+  };
+
+  try {
+    uni.showLoading({ title: '保存中...' });
+    const res = await billApi.create(payload);
+    if (res.code === 200) {
+      uni.showToast({
+        title: '保存成功',
+        icon: 'success'
+      });
+
+      // 清空表单
+      form.amount = '';
+      form.remark = '';
+      selectedCategory.value = '';
+      selectedCategoryId.value = null;
+      form.date = new Date().toISOString().split('T')[0];
+    } else {
+      uni.showToast({
+        title: res.message || '保存失败',
+        icon: 'none'
+      });
+    }
+  } catch (error: any) {
+    console.error('保存账单失败:', error);
     uni.showToast({
-      title: '保存成功',
-      icon: 'success'
+      title: error?.message || '保存失败',
+      icon: 'none'
     });
-    
-    // 清空表单
-    form.amount = '';
-    form.remark = '';
-    selectedCategory.value = '';
-    selectedCategoryId.value = null;
-    form.date = new Date().toISOString().split('T')[0];
-  }, 1000);
+  } finally {
+    uni.hideLoading();
+  }
 };
 
 const goBack = () => {
@@ -203,6 +254,7 @@ const goBack = () => {
 
 onMounted(() => {
   console.log('记账页面加载');
+  loadCategories();
 });
 </script>
 

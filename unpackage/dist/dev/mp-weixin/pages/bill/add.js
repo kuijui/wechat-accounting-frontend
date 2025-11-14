@@ -1,9 +1,9 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const api_index = require("../../api/index.js");
 const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
   __name: "add",
   setup(__props) {
-    common_vendor.useRouter();
     const billType = common_vendor.ref("expense");
     const showCategoryPicker = common_vendor.ref(false);
     const showDatePicker = common_vendor.ref(false);
@@ -14,15 +14,33 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       date: (/* @__PURE__ */ new Date()).toISOString().split("T")[0],
       remark: ""
     });
-    const categories = common_vendor.ref([
-      { id: 1, name: "餐饮" },
-      { id: 2, name: "交通" },
-      { id: 3, name: "购物" },
-      { id: 4, name: "娱乐" },
-      { id: 5, name: "医疗" },
-      { id: 6, name: "住房" },
-      { id: 7, name: "其他" }
-    ]);
+    const categories = common_vendor.ref([]);
+    const loadCategories = async () => {
+      try {
+        const type = billType.value === "income" ? 1 : 2;
+        const res = await api_index.categoryApi.getList(type);
+        if (res.code === 200 && Array.isArray(res.data)) {
+          categories.value = res.data;
+        } else {
+          categories.value = [];
+        }
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/bill/add.vue:152", "获取分类失败:", error);
+        categories.value = [];
+        common_vendor.index.showToast({
+          title: (error == null ? void 0 : error.message) || "获取分类失败",
+          icon: "none"
+        });
+      }
+    };
+    const changeBillType = (type) => {
+      if (billType.value === type)
+        return;
+      billType.value = type;
+      selectedCategory.value = "";
+      selectedCategoryId.value = null;
+      loadCategories();
+    };
     const handleAmountInput = () => {
       if (form.amount && !/^\d+(\.\d{0,2})?$/.test(form.amount)) {
         form.amount = form.amount.replace(/[^\d.]/g, "");
@@ -41,6 +59,14 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         });
         return;
       }
+      const amountNum = Number(form.amount);
+      if (isNaN(amountNum) || amountNum <= 0) {
+        common_vendor.index.showToast({
+          title: "金额必须大于0",
+          icon: "none"
+        });
+        return;
+      }
       if (!selectedCategoryId.value) {
         common_vendor.index.showToast({
           title: "请选择分类",
@@ -48,33 +74,56 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         });
         return;
       }
-      common_vendor.index.showLoading({ title: "保存中..." });
-      setTimeout(() => {
-        common_vendor.index.hideLoading();
+      const payload = {
+        categoryId: selectedCategoryId.value,
+        amount: amountNum,
+        type: billType.value === "income" ? 1 : 2,
+        billDate: form.date,
+        remark: form.remark || void 0
+      };
+      try {
+        common_vendor.index.showLoading({ title: "保存中..." });
+        const res = await api_index.billApi.create(payload);
+        if (res.code === 200) {
+          common_vendor.index.showToast({
+            title: "保存成功",
+            icon: "success"
+          });
+          form.amount = "";
+          form.remark = "";
+          selectedCategory.value = "";
+          selectedCategoryId.value = null;
+          form.date = (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
+        } else {
+          common_vendor.index.showToast({
+            title: res.message || "保存失败",
+            icon: "none"
+          });
+        }
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/bill/add.vue:241", "保存账单失败:", error);
         common_vendor.index.showToast({
-          title: "保存成功",
-          icon: "success"
+          title: (error == null ? void 0 : error.message) || "保存失败",
+          icon: "none"
         });
-        form.amount = "";
-        form.remark = "";
-        selectedCategory.value = "";
-        selectedCategoryId.value = null;
-        form.date = (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
-      }, 1e3);
+      } finally {
+        common_vendor.index.hideLoading();
+      }
     };
     const goBack = () => {
       common_vendor.index.navigateBack();
     };
     common_vendor.onMounted(() => {
-      common_vendor.index.__f__("log", "at pages/bill/add.vue:205", "记账页面加载");
+      common_vendor.index.__f__("log", "at pages/bill/add.vue:256", "记账页面加载");
+      loadCategories();
     });
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: common_vendor.o(goBack),
         b: billType.value === "expense" ? 1 : "",
-        c: common_vendor.o(($event) => billType.value = "expense"),
+        c: common_vendor.o(($event) => changeBillType("expense")),
         d: billType.value === "income" ? 1 : "",
-        e: common_vendor.o(($event) => billType.value = "income"),
+        e: common_vendor.o(($event) => changeBillType("income")),
         f: common_vendor.o([($event) => form.amount = $event.detail.value, handleAmountInput]),
         g: form.amount,
         h: common_vendor.t(selectedCategory.value || "请选择分类"),

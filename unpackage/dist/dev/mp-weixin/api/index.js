@@ -14,6 +14,24 @@ const userApi = {
     return utils_request.request.put("/user/info", data);
   }
 };
+const categoryApi = {
+  // 获取分类列表
+  getList: (type) => {
+    return utils_request.request.get("/category/list", { type });
+  },
+  // 创建分类
+  create: (data) => {
+    return utils_request.request.post("/category/create", data);
+  },
+  // 更新分类
+  update: (id, data) => {
+    return utils_request.request.put(`/category/update/${id}`, data);
+  },
+  // 删除分类
+  delete: (id) => {
+    return utils_request.request.delete(`/category/delete/${id}`);
+  }
+};
 const billApi = {
   // 创建账单
   create: (data) => {
@@ -74,6 +92,7 @@ const budgetApi = {
 };
 exports.billApi = billApi;
 exports.budgetApi = budgetApi;
+exports.categoryApi = categoryApi;
 exports.statisticApi = statisticApi;
 exports.userApi = userApi;
 //# sourceMappingURL=../../.sourcemap/mp-weixin/api/index.js.map
