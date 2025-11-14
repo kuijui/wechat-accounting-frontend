@@ -1,23 +1,172 @@
 
 .bill-list-container.data-v-7144ee87 {
+  min-height: 100vh;
+  background-color: #f5f5f5;
   padding: 20rpx;
+  box-sizing: border-box;
 }
+
+/* 头部 */
 .header.data-v-7144ee87 {
-  text-align: center;
-  margin-bottom: 40rpx;
+  margin-bottom: 20rpx;
 }
-.title.data-v-7144ee87 {
-  font-size: 36rpx;
-  font-weight: bold;
-  color: #333;
-}
-.content.data-v-7144ee87 {
+.month-bar.data-v-7144ee87 {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 400rpx;
+  margin-bottom: 20rpx;
 }
-.placeholder.data-v-7144ee87 {
+.month-text.data-v-7144ee87 {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin: 0 40rpx;
+}
+.arrow.data-v-7144ee87 {
+  font-size: 40rpx;
   color: #999;
+  padding: 10rpx 20rpx;
+}
+.summary.data-v-7144ee87 {
+  display: flex;
+  justify-content: space-between;
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 20rpx 30rpx;
+  box-shadow: 0 6rpx 20rpx rgba(0, 0, 0, 0.05);
+  margin-bottom: 20rpx;
+}
+.summary-item.data-v-7144ee87 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.summary-label.data-v-7144ee87 {
+  font-size: 22rpx;
+  color: #888;
+  margin-bottom: 6rpx;
+}
+.summary-income.data-v-7144ee87 {
   font-size: 28rpx;
+  color: #07c160;
+  font-weight: 600;
+}
+.summary-expense.data-v-7144ee87 {
+  font-size: 28rpx;
+  color: #ff4d4f;
+  font-weight: 600;
+}
+.summary-balance.data-v-7144ee87 {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+/* 类型筛选 */
+.type-filter.data-v-7144ee87 {
+  display: flex;
+  background: #ffffff;
+  border-radius: 50rpx;
+  padding: 6rpx;
+  margin-bottom: 20rpx;
+}
+.type-tab.data-v-7144ee87 {
+  flex: 1;
+  text-align: center;
+  padding: 14rpx 0;
+  font-size: 26rpx;
+  color: #666;
+  border-radius: 40rpx;
+}
+.type-tab.active.data-v-7144ee87 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* 内容区域 */
+.content.data-v-7144ee87 {
+  background: transparent;
+}
+.loading.data-v-7144ee87 {
+  text-align: center;
+  color: #999;
+  padding: 60rpx 0;
+}
+.empty.data-v-7144ee87 {
+  padding: 80rpx 0;
+  text-align: center;
+}
+.empty-icon.data-v-7144ee87 {
+  font-size: 80rpx;
+  display: block;
+  margin-bottom: 20rpx;
+}
+.empty-text.data-v-7144ee87 {
+  font-size: 26rpx;
+  color: #999;
+}
+.list-scroll.data-v-7144ee87 {
+  max-height: calc(100vh - 320rpx);
+}
+.bill-item.data-v-7144ee87 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.03);
+}
+.bill-left.data-v-7144ee87 {
+  display: flex;
+  align-items: center;
+}
+.icon-circle.data-v-7144ee87 {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  background: #f3f3ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+.icon-text.data-v-7144ee87 {
+  font-size: 32rpx;
+  color: #667eea;
+}
+.bill-info.data-v-7144ee87 {
+  display: flex;
+  flex-direction: column;
+}
+.bill-title.data-v-7144ee87 {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 6rpx;
+}
+.bill-remark.data-v-7144ee87 {
+  font-size: 22rpx;
+  color: #999;
+}
+.bill-right.data-v-7144ee87 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.bill-amount.data-v-7144ee87 {
+  font-size: 30rpx;
+  font-weight: 600;
+  margin-bottom: 6rpx;
+}
+.bill-amount.income.data-v-7144ee87 {
+  color: #07c160;
+}
+.bill-amount.expense.data-v-7144ee87 {
+  color: #ff4d4f;
+}
+.bill-date.data-v-7144ee87 {
+  font-size: 22rpx;
+  color: #999;
 }
